@@ -7,8 +7,8 @@ build/
 .flutter-plugins
 .flutter-plugins-dependencies
 
-# Pub cache lock (keep ONLY if you want reproducible builds)
-# pubspec.lock   <-- usually KEEP for apps (recommended)
+# pubspec.lock (keep for apps - DO NOT ignore unless library)
+# pubspec.lock
 
 # =========================
 # Android
@@ -27,20 +27,20 @@ ios/Flutter/Flutter.podspec
 ios/build/
 
 # =========================
-# Environment files (VERY IMPORTANT for SafeConnect)
+# Environment files (CRITICAL - SafeConnect security)
 # =========================
 .env
 .env.*
 *.env
+serviceAccountKey.json
 
 # =========================
 # Logs & system
 # =========================
 *.log
-*.lock
 
 # =========================
-# IDE (VS Code / Android Studio)
+# IDE
 # =========================
 .vscode/
 .idea/
