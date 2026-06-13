@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "272817537986",
+    "firebase_url": "https://safeconnect-e60a3-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "safeconnect-e60a3",
+    "storage_bucket": "safeconnect-e60a3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272817537986:android:eb3af41dfb77fcc6c10c5b",
+        "android_client_info": {
+          "package_name": "com.example.safeconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4bbsFfngFlxjsV8TK1SAlE8S0HQwffSQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
