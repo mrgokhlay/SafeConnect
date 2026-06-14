@@ -6,12 +6,15 @@ if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
     );
 }
 
-const serviceAccount = JSON.parse(
-    process.env.FIREBASE_SERVICE_ACCOUNT
-);
+// Prevent re-initialization (VERY IMPORTANT in production)
+if (!admin.apps.length) {
+    const serviceAccount = JSON.parse(
+        process.env.FIREBASE_SERVICE_ACCOUNT
+    );
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-});
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+    });
+}
 
 module.exports = admin;

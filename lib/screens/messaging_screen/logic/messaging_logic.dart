@@ -63,7 +63,11 @@ class MessagingService {
       });
     });
 
-    await _sendNotification(otherUserId, trimmed);
+    await _sendNotification(
+      receiverId: otherUserId,
+      message: trimmed,
+      chatId: chatId,
+    );
   }
 
   // =========================
@@ -148,14 +152,23 @@ class MessagingService {
   // =========================
   // NOTIFICATION (SAFE)
   // =========================
-  Future<void> _sendNotification(String receiverId, String message) async {
+  Future<void> _sendNotification({
+    required String receiverId,
+    required String message,
+    required String chatId,
+  }) async {
     try {
       await http.post(
         Uri.parse(
           "https://safeconnect-production.up.railway.app/message-notification",
         ),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"receiverId": receiverId, "message": message}),
+        body: jsonEncode({
+          "receiverId": receiverId,
+          "message": message,
+          "chatId": chatId,
+          "senderId": uid,
+        }),
       );
     } catch (_) {
       // silent fail (don’t break chat)

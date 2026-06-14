@@ -156,13 +156,22 @@ class RequestsService {
   // ✅ ACCEPT REQUEST
   // ===============================
   Future<String> acceptRequest(String requestId, String senderId) async {
-    await _firestore.collection('chat_requests').doc(requestId).update({
-      'status': 'accepted',
+    final requestRef = _firestore.collection('chat_requests').doc(requestId);
+
+    await _firestore.runTransaction((tx) async {
+      final snap = await tx.get(requestRef);
+
+      if (!snap.exists) return;
+
+      final status = snap['status'];
+
+      if (status != 'pending') return;
+
+      tx.update(requestRef, {'status': 'accepted'});
     });
 
     final chatId = await ChatService().createOrGetChat(senderId);
 
-    // 🔥 SEND ACCEPT NOTIFICATION (ONLY ONCE)
     await _sendAcceptNotification(receiverId: senderId);
 
     return chatId;

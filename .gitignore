@@ -7,9 +7,6 @@ build/
 .flutter-plugins
 .flutter-plugins-dependencies
 
-# pubspec.lock (keep for apps - DO NOT ignore unless library)
-# pubspec.lock
-
 # =========================
 # Android
 # =========================
@@ -27,11 +24,10 @@ ios/Flutter/Flutter.podspec
 ios/build/
 
 # =========================
-# Environment files (CRITICAL - SafeConnect security)
+# Environment files (SECURITY)
 # =========================
 .env
 .env.*
-*.env
 serviceAccountKey.json
 
 # =========================
@@ -47,10 +43,10 @@ serviceAccountKey.json
 *.iml
 
 # =========================
-# Generated JS (Flutter web)
+# Flutter Web generated JS ONLY
 # =========================
+build/web/
 *.dart.js
-*.js
 *.js.map
 *.js.deps
 *.info.json
