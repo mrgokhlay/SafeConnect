@@ -15,7 +15,6 @@ router.post("/message-notification", async (req, res) => {
             });
         }
 
-        // GET RECEIVER
         const userSnap = await db.collection("users").doc(receiverId).get();
 
         if (!userSnap.exists) {
@@ -28,14 +27,12 @@ router.post("/message-notification", async (req, res) => {
             return res.status(404).json({ error: "FCM token not found" });
         }
 
-        // GET SENDER NAME
         const senderSnap = await db.collection("users").doc(senderId).get();
         const senderName =
             senderSnap.data()?.username ||
             senderSnap.data()?.displayName ||
             "Someone";
 
-        // 🔥 GET UNREAD COUNT FROM CHAT
         const chatSnap = await db.collection("chats").doc(chatId).get();
 
         let unreadCount = 1;
@@ -53,15 +50,13 @@ router.post("/message-notification", async (req, res) => {
 
         const payload = {
             token: fcmToken,
-
             notification: {
                 title: senderName,
                 body: bodyText,
             },
-
             data: {
-                chatId: chatId,
-                senderId: senderId,
+                chatId,
+                senderId,
                 type: "chat_message",
                 unreadCount: String(unreadCount),
             },
@@ -83,3 +78,6 @@ router.post("/message-notification", async (req, res) => {
         });
     }
 });
+
+// 🔥 THIS WAS MISSING
+module.exports = router;
