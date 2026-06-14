@@ -1,8 +1,11 @@
+const router = require("express").Router();
+const admin = require("../firebase");
+const db = admin.firestore();
+
 router.post("/friend-request", async (req, res) => {
     try {
         const { receiverId, senderName } = req.body;
 
-        // 1. Validate input
         if (!receiverId || !senderName) {
             return res.status(400).json({
                 success: false,
@@ -10,7 +13,6 @@ router.post("/friend-request", async (req, res) => {
             });
         }
 
-        // 2. Get user
         const userSnap = await db.collection("users").doc(receiverId).get();
 
         if (!userSnap.exists) {
@@ -29,7 +31,6 @@ router.post("/friend-request", async (req, res) => {
             });
         }
 
-        // 3. Send notification
         await admin.messaging().send({
             token,
             notification: {
@@ -41,9 +42,7 @@ router.post("/friend-request", async (req, res) => {
             },
         });
 
-        return res.status(200).json({
-            success: true,
-        });
+        return res.status(200).json({ success: true });
 
     } catch (e) {
         console.error("Friend Request Error:", e);
@@ -54,3 +53,5 @@ router.post("/friend-request", async (req, res) => {
         });
     }
 });
+
+module.exports = router;
