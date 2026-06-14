@@ -127,7 +127,7 @@ class _SafeConnectAppState extends ConsumerState<SafeConnectApp> {
       routerConfig: router,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: themeMode,
+      themeMode: themeMode ?? ThemeMode.dark,
     );
   }
 }

@@ -73,7 +73,6 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
       );
       return;
     }
-
     try {
       await ref
           .read(usernameControllerProvider.notifier)
@@ -83,15 +82,26 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          backgroundColor: accent,
-          content: Text("Username saved successfully"),
+          backgroundColor: Color(0xFF8B5CF6),
+          duration: Duration(seconds: 2),
+          content: Text(
+            "Username saved successfully",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       );
 
       context.go('/chat');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(backgroundColor: Colors.redAccent, content: Text("Error: $e")),
+        SnackBar(
+          backgroundColor: Colors.redAccent,
+          duration: const Duration(seconds: 2),
+          content: Text(
+            "Error: $e",
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
       );
     }
   }

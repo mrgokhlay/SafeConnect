@@ -103,13 +103,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
               );
 
               if (otherUserId.isEmpty) return const SizedBox();
-              final deletedFor = List<String>.from(data['deletedFor'] ?? []);
-              final rawMsg = data['lastMessage'];
-              final lastMsg = deletedFor.contains(uid)
-                  ? "No messages yet"
-                  : (rawMsg == null || rawMsg.toString().trim().isEmpty)
-                  ? "No messages yet"
-                  : rawMsg.toString();
 
               final unreadMap = Map<String, dynamic>.from(
                 data['unreadCount'] ?? {},
@@ -129,35 +122,38 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                     builder: (context, onlineSnap) {
                       final isOnline = onlineSnap.data ?? false;
 
-                      return ChatTile(
-                        username: username,
-                        lastMsg: lastMsg,
+                      return FutureBuilder<String>(
+                        future: chatService.getLastVisibleMessage(chat.id, uid),
+                        builder: (context, msgSnap) {
+                          final lastMsg = msgSnap.data ?? "No messages yet";
 
-                        lastMessageTime: ChatFormatters.getLastMessageTime(
-                          data,
-                        ),
+                          return ChatTile(
+                            username: username,
+                            lastMsg: lastMsg,
+                            lastMessageTime: ChatFormatters.getLastMessageTime(
+                              data,
+                            ),
+                            isOnline: isOnline,
+                            unread: unread,
+                            onTap: () async {
+                              context.push(
+                                '/message',
+                                extra: {
+                                  'chatId': chat.id,
+                                  'otherUserId': otherUserId,
+                                  'otherUsername': username,
+                                },
+                              );
 
-                        isOnline: isOnline,
-                        unread: unread,
-
-                        onTap: () async {
-                          context.push(
-                            '/message',
-                            extra: {
-                              'chatId': chat.id,
-                              'otherUserId': otherUserId,
-                              'otherUsername': username,
+                              await chatService.resetUnread(chat.id);
                             },
-                          );
-
-                          await chatService.resetUnread(chat.id);
-                        },
-
-                        onLongPress: () {
-                          ChatDeleteDialog.show(
-                            context: context,
-                            chatService: chatService,
-                            chatId: chat.id,
+                            onLongPress: () {
+                              ChatDeleteDialog.show(
+                                context: context,
+                                chatService: chatService,
+                                chatId: chat.id,
+                              );
+                            },
                           );
                         },
                       );

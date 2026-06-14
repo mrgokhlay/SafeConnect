@@ -54,8 +54,6 @@ class MessagingService {
       });
 
       tx.update(chatRef, {
-        'lastMessage': trimmed,
-        'lastMessageTime': FieldValue.serverTimestamp(),
         'lastMessageSenderId': uid,
 
         // unread update (critical fix)

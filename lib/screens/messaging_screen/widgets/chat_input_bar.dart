@@ -106,8 +106,16 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
                     );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text("Message not sent")),
-  );
+                      SnackBar(
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                        content: const Text(
+                          "Message not sent",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
                   }
                 },
               ),

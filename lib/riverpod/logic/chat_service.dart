@@ -124,4 +124,25 @@ class ChatService {
       'unreadCount.$uid': 0,
     }, SetOptions(merge: true));
   }
+
+  Future<String> getLastVisibleMessage(String chatId, String uid) async {
+    final snap = await FirebaseFirestore.instance
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('sentAt', descending: true)
+        .limit(30)
+        .get();
+
+    for (final doc in snap.docs) {
+      final data = doc.data();
+      final deletedFor = List<String>.from(data['deletedFor'] ?? []);
+
+      if (!deletedFor.contains(uid)) {
+        return data['text'] ?? "No messages yet";
+      }
+    }
+
+    return "No messages yet";
+  }
 }

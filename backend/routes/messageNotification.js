@@ -6,45 +6,64 @@ const db = admin.firestore();
 
 router.post("/message-notification", async (req, res) => {
     try {
-        const { receiverId, message, chatId, senderId } = req.body;
+        const { receiverId, chatId, senderId } = req.body;
 
-        if (!receiverId || !message) {
+        if (!receiverId || !senderId || !chatId) {
             return res.status(400).json({
                 success: false,
-                error: "receiverId and message are required",
+                error: "receiverId, senderId and chatId are required",
             });
         }
 
+        // GET RECEIVER
         const userSnap = await db.collection("users").doc(receiverId).get();
 
         if (!userSnap.exists) {
-            return res.status(404).json({
-                success: false,
-                error: "User not found",
-            });
+            return res.status(404).json({ error: "User not found" });
         }
 
         const fcmToken = userSnap.data()?.fcmToken;
 
         if (!fcmToken) {
-            return res.status(404).json({
-                success: false,
-                error: "FCM token not found",
-            });
+            return res.status(404).json({ error: "FCM token not found" });
         }
+
+        // GET SENDER NAME
+        const senderSnap = await db.collection("users").doc(senderId).get();
+        const senderName =
+            senderSnap.data()?.username ||
+            senderSnap.data()?.displayName ||
+            "Someone";
+
+        // 🔥 GET UNREAD COUNT FROM CHAT
+        const chatSnap = await db.collection("chats").doc(chatId).get();
+
+        let unreadCount = 1;
+
+        if (chatSnap.exists) {
+            const data = chatSnap.data();
+            const unreadMap = data?.unreadCount || {};
+            unreadCount = unreadMap[receiverId] || 1;
+        }
+
+        const bodyText =
+            unreadCount === 1
+                ? "1 new message"
+                : `${unreadCount} new messages`;
 
         const payload = {
             token: fcmToken,
 
             notification: {
-                title: "New Message 💬",
-                body: message,
+                title: senderName,
+                body: bodyText,
             },
 
             data: {
-                chatId: chatId || "",
-                senderId: senderId || "",
+                chatId: chatId,
+                senderId: senderId,
                 type: "chat_message",
+                unreadCount: String(unreadCount),
             },
         };
 
@@ -64,5 +83,3 @@ router.post("/message-notification", async (req, res) => {
         });
     }
 });
-
-module.exports = router;
